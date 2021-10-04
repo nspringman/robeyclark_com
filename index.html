@@ -6,10 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Robey Clark Design</title>
     <style>
-        body {     
-            background: url(./robeyclark.jpg);
-            background-repeat: repeat;
+        /* https://stackoverflow.com/questions/5087420/how-to-rotate-the-background-image-in-the-container */
+        body:before {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            z-index: -1;
+            background: url(./robeyclark.jpg) 0 0 repeat;
             background-size: 250px;
+            -webkit-transform: rotate(-45deg);
+            -moz-transform: rotate(-45deg);
+            -ms-transform: rotate(-45deg);
+            -o-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+        }
+        body {
+            overflow: hidden;
         }
     </style>
 </head>
