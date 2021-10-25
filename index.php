@@ -26,20 +26,28 @@ get_header();
 		.carousel-item {
 			height: 500px;
 		}
-		.thumbnail-grid-container {
+		/* .thumbnail-grid-container {
 			display: flex;
 			align-items: center;
 			flex-wrap: wrap;
+		} */
+		.homepage-thumbnail:before{
+			content: "";
+			display: block;
+			padding-top: 100%;  /* initial ratio of 1:1*/
 		}
-		.homepage-thumbnail-wrapper {
-			width: 180px;
-			height: 180px;
+		.homepage-thumbnail {
+			/* width: 180px;
+			height: 180px; */
+			/* width: 100%;
+			padding-bottom: 100%; */
 			background-position: 50% 50%;
 			background-repeat: no-repeat;
 			background-size: cover;
-			margin: 10px;
+			margin: 7px 0px;
+			/* margin: 10px; */
 		}
-		.homepage-thumbnail-wrapper:hover, .selected-thumbnail {
+		.homepage-thumbnail:hover, .selected-thumbnail {
 			-webkit-box-shadow: 0px 0px 0px 2px lightgrey; 
 			box-shadow: 0px 0px 0px 2px lightgrey;
 		}
@@ -49,7 +57,7 @@ get_header();
 		.category-title span{
 			position: absolute;
 			bottom: 0;
-			right: 0;
+			right: 14px;
 			text-align: right;
 			width: 100%;
 		}
@@ -62,7 +70,7 @@ get_header();
 		<main id="main" class="site-main">
 			<div class="container-lg">
 				<div class='row justify-content-center'>
-					<div class='col-md-10'>
+					<div class='col-md-12'>
 						<div id="carousel-container">
 							<div id="top-carousel" class="carousel slide" data-bs-ride="carousel">
 								<div class="carousel-inner"></div>
@@ -70,9 +78,9 @@ get_header();
 						</div>
 					</div>
 				</div>
-				<div class='row justify-content-center'>
-					<div class='col-md-10'>
-						<div class="thumbnail-grid-container">
+				<div class='row'>
+					<!-- <div class='col-md-10'> -->
+						<!-- <div class="row thumbnail-grid-container"> -->
 							<?php
 							$categories = get_categories();
 							foreach($categories as $category) {
@@ -84,16 +92,17 @@ get_header();
 								);
 								$category_query = new WP_Query( $args );
 								if ( $category_query->have_posts() ) { ?>
-									<div class="homepage-thumbnail-wrapper category-title">
+									<div class="col-md-3 homepage-thumbnail-wrapper category-title">
 										<span><?php echo $category->name; ?></span>
 									</div><?php
 									// Load posts loop.
 									while ( $category_query->have_posts() ) {
 										$category_query->the_post();
 										?>
-											<div class="homepage-thumbnail-wrapper" 
-												style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"
+											<div class="col-md-3
+											homepage-thumbnail-wrapper" 
 												data-post-id="<?php echo get_the_ID() ?>" >
+												<div class="homepage-thumbnail" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
 											</div>
 										<?php 
 										
@@ -110,8 +119,8 @@ get_header();
 								}
 							}
 							?>
-						</div>
-					</div>
+						<!-- </div> -->
+					<!-- </div> -->
 				</div>
 			</div>
 			
