@@ -29,8 +29,10 @@
 
 		<header id="masthead" class="<?php echo is_singular() && twentynineteen_can_show_post_thumbnail() ? 'site-header featured-image' : 'site-header'; ?>">
 
-			<div class="site-branding-container">
-				<?php get_template_part( 'template-parts/header/site', 'branding' ); ?>
+			<div class="site-branding-container container">
+				<div class="row">
+					<div class="col-12"><h1 class="site-title">Robey Clark</h1></div>
+				</div>
 			</div><!-- .site-branding-container -->
 
 			<?php if ( is_singular() && twentynineteen_can_show_post_thumbnail() ) : ?>

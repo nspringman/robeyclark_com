@@ -17,11 +17,13 @@
 get_header();
 ?>
 	<style>
-		* {
+		h1, h2, h3, h4, h5, h6, p, span {
 			font-family: 'Times New Roman', serif;
 		}
-		.site-title a {
+		.site-title {
+			font-family: 'Times New Roman', serif;
 			text-decoration: none;
+
 		}
 		.carousel-item {
 			height: 500px;
@@ -72,8 +74,14 @@ get_header();
 				<div class='row justify-content-center'>
 					<div class='col-md-12'>
 						<div id="carousel-container">
-							<div id="top-carousel" class="carousel slide" data-bs-ride="carousel">
+							<div id="top-carousel" class="carousel slide" data-bs-ride="carousel" data-interval="false">
 								<div class="carousel-inner"></div>
+							</div>
+							<div id="carousel-controls">
+								<span><</span>
+								<span id="previous-slide-control">Previous</span>
+								<span id="next-slide-control">Next</span>
+								<span>></span>
 							</div>
 						</div>
 					</div>
@@ -92,14 +100,14 @@ get_header();
 								);
 								$category_query = new WP_Query( $args );
 								if ( $category_query->have_posts() ) { ?>
-									<div class="col-md-3 homepage-thumbnail-wrapper category-title">
+									<div class="col-md-2 homepage-thumbnail-wrapper category-title">
 										<span><?php echo $category->name; ?></span>
 									</div><?php
 									// Load posts loop.
 									while ( $category_query->have_posts() ) {
 										$category_query->the_post();
 										?>
-											<div class="col-md-3
+											<div class="col-md-2
 											homepage-thumbnail-wrapper" 
 												data-post-id="<?php echo get_the_ID() ?>" >
 												<div class="homepage-thumbnail" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
@@ -153,7 +161,17 @@ $( document ).ready(function() {
     $('.homepage-thumbnail-wrapper')
 		.on('click', function(event) {
 			setCarousel($(this).data('post-id'))
-		})
+		});
+	const carousel = $('#top-carousel');
+	carousel.carousel('pause')
+	$('#previous-slide-control')
+		.on('click', function(event) {
+			carousel.carousel('prev');
+		});
+	$('#next-slide-control')
+		.on('click', function(event) {
+			carousel.carousel('next');
+		});
 });
 </script>
 <?php
