@@ -77,12 +77,28 @@ get_header();
 							<div id="top-carousel" class="carousel slide" data-bs-ride="carousel" data-interval="false">
 								<div class="carousel-inner"></div>
 							</div>
-							<div id="carousel-controls">
-								<span><</span>
-								<span id="previous-slide-control">Previous</span>
-								<span id="next-slide-control">Next</span>
-								<span>></span>
-							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row justify-content-between">
+					<div class="col-md-2 col-6">
+						<div id="previous-slide-control">
+							<span><</span>
+							<span >Previous</span>
+						</div>
+					</div>
+					<div class="col-md-8" id="work-details">
+						<span id="work-title"></span>
+						<span id="work-client"></span>
+						<span id="work-year"></span>
+						<span id="work-medium"></span>
+						<span id="work-dimensions"></span>
+						<span id="work-price"></span>
+					</div>
+					<div class="col-md-2 col-6">
+						<div id="next-slide-control">
+							<span>Next</span>
+							<span>></span>
 						</div>
 					</div>
 				</div>
@@ -135,10 +151,10 @@ get_header();
 		</main><!-- .site-main -->
 	</div><!-- .content-area -->
 <script>
-$( document ).ready(function() {
+$(document).ready(function() {
 	function setCarousel(postID) {
-		const link = `http://localhost:8888/robeyclark_com/wp-json/wp/v2/media?parent=${postID}`
-		fetch(link)
+		const imageLink = `http://localhost:8888/robeyclark_com/wp-json/wp/v2/media?parent=${postID}`
+		fetch(imageLink)
 			.then(response => response.json())
 			.then(json => {
 				console.log(json)
@@ -156,6 +172,20 @@ $( document ).ready(function() {
 				})
 			})
 			.catch(err => console.error(err))
+		
+		const postMetaLink = `http://localhost:8888/robeyclark_com/wp-json/wp/v2/posts/${postID}`
+		fetch(postMetaLink)
+			.then(response => response.json())
+			.then(json => {
+				console.log(json)
+				let workDetails = json.work_details
+				$('#work-title').text(json.title.rendered ? json.title.rendered + ',' : '');
+				$('#work-client').text(workDetails.client ? workDetails.client[0] + ',' : '');
+				$('#work-year').text(workDetails.year ? workDetails.year[0] + ',' : '');
+				$('#work-medium').text(workDetails.medium ? workDetails.medium[0] + ',' : '');
+				$('#work-dimensions').text(workDetails.dimensions ? workDetails.dimensions[0] + ',' : '');
+				$('#work-price').text(workDetails.price ? workDetails.price[0] : '');
+			})
 	}
 
     $('.homepage-thumbnail-wrapper')
@@ -163,7 +193,7 @@ $( document ).ready(function() {
 			setCarousel($(this).data('post-id'))
 		});
 	const carousel = $('#top-carousel');
-	carousel.carousel('pause')
+	carousel.carousel('pause');
 	$('#previous-slide-control')
 		.on('click', function(event) {
 			carousel.carousel('prev');

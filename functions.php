@@ -5,11 +5,11 @@ add_action( 'rest_api_init', function () {
         'get_callback' => function( $post_arr ) {
 			$meta = get_post_meta( $post_arr['id']);
 			$response = array(
-				'price' => $meta['price'],
-				'dimensions' => $meta['dimensions'],
-				'medium' => $meta['medium'],
-				'caption' => $meta['caption'],
-				'client' => $meta['client'],
+				'price' => $meta['price'] ?? '',
+				'dimensions' => $meta['dimensions'] ?? '',
+				'medium' => $meta['medium'] ?? '',
+				'caption' => $meta['caption'] ?? '',
+				'client' => $meta['client'] ?? '',
 			);
             return $response;
         },
