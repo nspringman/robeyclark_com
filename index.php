@@ -53,12 +53,44 @@ get_header();
 			text-align: right;
 			width: 100%;
 		}
-		.category-title:hover{
+		.category-title:hover {
 			-webkit-box-shadow: none;
 			box-shadow: none;
 		}
+		#carousel-container {
+			position: relative;
+		}
+		#work-description-wrapper {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			overflow-y: scroll;
+			width: 100%;
+			height: 0;
+			background-color: rgba(255,255,255,0.8);
+			height: 0;
+			width: 100%;
+			transition: .5s;
+		}
+		.show-slide-up {
+			height: 100% !important;
+		}
+		#work-description {
+			width: 80%;
+			margin: auto;
+			font-size: 1.3em;
+			margin-top: 4em;
+		}
+		#work-details {
+			text-align: center;
+		}
 		#next-slide-control {
 			float: right;
+		}
+		#work-more-control {
+			text-decoration: underline;
+			cursor: pointer;
 		}
 	</style>
 	<div id="primary" class="content-area">
@@ -69,6 +101,9 @@ get_header();
 						<div id="carousel-container">
 							<div id="top-carousel" class="carousel slide" data-bs-ride="carousel" data-interval="false">
 								<div class="carousel-inner"></div>
+							</div>
+							<div id="work-description-wrapper">
+								<div id="work-description"></div>
 							</div>
 						</div>
 					</div>
@@ -87,6 +122,7 @@ get_header();
 						<span id="work-medium"></span>
 						<span id="work-dimensions"></span>
 						<span id="work-price"></span>
+						<span id="work-more"></span>
 					</div>
 					<div class="col-md-2 col-6">
 						<div id="next-slide-control">
@@ -103,7 +139,7 @@ get_header();
 							'post_type' => 'post',
 							'post_status' => 'publish',
 							'category_name' => $category->name,
-							'posts_per_page' => 3
+							'posts_per_page' => -1
 						);
 						$category_query = new WP_Query( $args );
 						if ( $category_query->have_posts() ) { ?>
@@ -114,10 +150,8 @@ get_header();
 							while ( $category_query->have_posts() ) {
 								$category_query->the_post();
 								?>
-									<div class="col-md-2
-									homepage-thumbnail-wrapper" 
-										data-post-id="<?php echo get_the_ID() ?>" >
-										<div class="homepage-thumbnail" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
+									<div class="col-md-2 homepage-thumbnail-wrapper">
+										<div class="homepage-thumbnail" data-post-id="<?php echo get_the_ID() ?>" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
 									</div>
 								<?php 
 								
@@ -174,15 +208,37 @@ $(document).ready(function() {
 				$('#work-medium').text(workDetails.medium ? workDetails.medium[0] + ',' : '');
 				$('#work-dimensions').text(workDetails.dimensions ? workDetails.dimensions[0] + ',' : '');
 				$('#work-price').text(workDetails.price ? workDetails.price[0] : '');
+				if(workDetails.caption) {
+					const wrapper = $('#work-more')
+					wrapper.text('');
+					wrapper.prepend(', ')
+					const control = $('<span id="work-more-control">more</span>');
+					control.on('click',toggleCaption)
+					wrapper.append(control);
+					$('#work-description').text(workDetails.caption ? workDetails.caption[0] : '');
+				}
 			})
 	}
 
-    $('.homepage-thumbnail-wrapper')
+	const toggleCaption = () => {
+		$('#work-description-wrapper').toggleClass('show-slide-up');
+		$('#work-more-control')
+			.text(
+				$('#work-description-wrapper').hasClass('show-slide-up') 
+				? 'less'
+				: 'more'
+			);
+	};
+
+    $('.homepage-thumbnail')
 		.on('click', function(event) {
 			setCarousel($(this).data('post-id'))
 		});
 	const carousel = $('#top-carousel');
-	carousel.carousel('pause');
+	carousel.carousel({
+        pause: true,
+        interval: false
+    });
 	$('#previous-slide-control')
 		.on('click', function(event) {
 			carousel.carousel('prev');
