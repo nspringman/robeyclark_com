@@ -28,26 +28,16 @@ get_header();
 		.carousel-item {
 			height: 500px;
 		}
-		/* .thumbnail-grid-container {
-			display: flex;
-			align-items: center;
-			flex-wrap: wrap;
-		} */
 		.homepage-thumbnail:before{
 			content: "";
 			display: block;
 			padding-top: 100%;  /* initial ratio of 1:1*/
 		}
 		.homepage-thumbnail {
-			/* width: 180px;
-			height: 180px; */
-			/* width: 100%;
-			padding-bottom: 100%; */
 			background-position: 50% 50%;
 			background-repeat: no-repeat;
 			background-size: cover;
 			margin: 7px 0px;
-			/* margin: 10px; */
 		}
 		.homepage-thumbnail:hover, .selected-thumbnail {
 			-webkit-box-shadow: 0px 0px 0px 2px lightgrey; 
@@ -66,6 +56,9 @@ get_header();
 		.category-title:hover{
 			-webkit-box-shadow: none;
 			box-shadow: none;
+		}
+		#next-slide-control {
+			float: right;
 		}
 	</style>
 	<div id="primary" class="content-area">
@@ -103,48 +96,44 @@ get_header();
 					</div>
 				</div>
 				<div class='row'>
-					<!-- <div class='col-md-10'> -->
-						<!-- <div class="row thumbnail-grid-container"> -->
-							<?php
-							$categories = get_categories();
-							foreach($categories as $category) {
-								$args = array(
-									'post_type' => 'post',
-									'post_status' => 'publish',
-									'category_name' => $category->name,
-									'posts_per_page' => 3
-								);
-								$category_query = new WP_Query( $args );
-								if ( $category_query->have_posts() ) { ?>
-									<div class="col-md-2 homepage-thumbnail-wrapper category-title">
-										<span><?php echo $category->name; ?></span>
-									</div><?php
-									// Load posts loop.
-									while ( $category_query->have_posts() ) {
-										$category_query->the_post();
-										?>
-											<div class="col-md-2
-											homepage-thumbnail-wrapper" 
-												data-post-id="<?php echo get_the_ID() ?>" >
-												<div class="homepage-thumbnail" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
-											</div>
-										<?php 
-										
-									}
-		
-									// // Previous/next page navigation.
-									// twentynineteen_the_posts_navigation();
-		
-								} else {
-		
-									// If no content, include the "No posts found" template.
-									get_template_part( 'template-parts/content/content', 'none' );
-		
-								}
+					<?php
+					$categories = get_categories();
+					foreach($categories as $category) {
+						$args = array(
+							'post_type' => 'post',
+							'post_status' => 'publish',
+							'category_name' => $category->name,
+							'posts_per_page' => 3
+						);
+						$category_query = new WP_Query( $args );
+						if ( $category_query->have_posts() ) { ?>
+							<div class="col-md-2 homepage-thumbnail-wrapper category-title">
+								<span><?php echo $category->name; ?></span>
+							</div><?php
+							// Load posts loop.
+							while ( $category_query->have_posts() ) {
+								$category_query->the_post();
+								?>
+									<div class="col-md-2
+									homepage-thumbnail-wrapper" 
+										data-post-id="<?php echo get_the_ID() ?>" >
+										<div class="homepage-thumbnail" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
+									</div>
+								<?php 
+								
 							}
-							?>
-						<!-- </div> -->
-					<!-- </div> -->
+
+							// // Previous/next page navigation.
+							// twentynineteen_the_posts_navigation();
+
+						} else {
+
+							// If no content, include the "No posts found" template.
+							get_template_part( 'template-parts/content/content', 'none' );
+
+						}
+					}
+					?>
 				</div>
 			</div>
 			
