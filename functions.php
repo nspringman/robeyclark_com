@@ -1,4 +1,23 @@
 <?php
+
+add_action( 'rest_api_init', function () {
+    register_rest_field( 'post', 'work_details', array(
+        'get_callback' => function( $post_arr ) {
+			$meta = get_post_meta( $post_arr['id']);
+			$response = array(
+				'price' => $meta['price'],
+				'dimensions' => $meta['dimensions'],
+				'medium' => $meta['medium'],
+				'caption' => $meta['caption'],
+				'client' => $meta['client'],
+			);
+            return $response;
+        },
+        'update_callback' => null,
+        'schema' => null,
+    ) );
+} );
+
 /**
  * Twenty Nineteen functions and definitions
  *
