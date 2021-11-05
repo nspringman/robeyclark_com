@@ -19,16 +19,15 @@ get_header();
 	<style>
 		h1, h2, h3, h4, h5, h6, p, span {
 			font-family: 'Times New Roman', serif;
+			color: #777 !important;
 		}
 		.site-title {
-			font-family: 'Times New Roman', serif;
-			text-decoration: none;
-
+			font-size: 1em;
 		}
 		.carousel-item {
 			height: 500px;
 		}
-		.homepage-thumbnail:before{
+		.homepage-thumbnail:before {
 			content: "";
 			display: block;
 			padding-top: 100%;  /* initial ratio of 1:1*/
@@ -103,7 +102,7 @@ get_header();
 								<div class="carousel-inner"></div>
 							</div>
 							<div id="work-description-wrapper">
-								<div id="work-description"></div>
+								<p id="work-description"></p>
 							</div>
 						</div>
 					</div>
@@ -112,10 +111,10 @@ get_header();
 					<div class="col-md-2 col-6">
 						<div id="previous-slide-control">
 							<span><</span>
-							<span >Previous</span>
+							<!-- <span>Previous</span> -->
 						</div>
 					</div>
-					<div class="col-md-8" id="work-details">
+					<div class="col-md-8 order-md-2 order-3" id="work-details">
 						<span id="work-title"></span>
 						<span id="work-client"></span>
 						<span id="work-year"></span>
@@ -124,9 +123,9 @@ get_header();
 						<span id="work-price"></span>
 						<span id="work-more"></span>
 					</div>
-					<div class="col-md-2 col-6">
+					<div class="col-md-2 col-6 order-md-3 order-2">
 						<div id="next-slide-control">
-							<span>Next</span>
+							<!-- <span>Next</span> -->
 							<span>></span>
 						</div>
 					</div>
@@ -176,6 +175,7 @@ get_header();
 <script>
 $(document).ready(function() {
 	function setCarousel(postID) {
+		$('#work-description-wrapper').removeClass('show-slide-up')
 		const imageLink = `http://localhost:8888/robeyclark_com/wp-json/wp/v2/media?parent=${postID}`
 		fetch(imageLink)
 			.then(response => response.json())
@@ -208,18 +208,18 @@ $(document).ready(function() {
 				$('#work-medium').text(workDetails.medium ? workDetails.medium[0] + ',' : '');
 				$('#work-dimensions').text(workDetails.dimensions ? workDetails.dimensions[0] + ',' : '');
 				$('#work-price').text(workDetails.price ? workDetails.price[0] : '');
+				const detailsWrapper = $('#work-more')
+				detailsWrapper.text('');
 				if(workDetails.caption) {
-					const wrapper = $('#work-more')
-					wrapper.text('');
-					wrapper.prepend(', ')
+					detailsWrapper.prepend(', ')
 					const control = $('<span id="work-more-control">more</span>');
 					control.on('click',toggleCaption)
-					wrapper.append(control);
+					detailsWrapper.append(control);
 					$('#work-description').text(workDetails.caption ? workDetails.caption[0] : '');
 				}
 			})
 	}
-
+	
 	const toggleCaption = () => {
 		$('#work-description-wrapper').toggleClass('show-slide-up');
 		$('#work-more-control')
