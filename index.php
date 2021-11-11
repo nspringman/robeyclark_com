@@ -15,6 +15,8 @@
  */
 
 get_header();
+$latest_cpt = get_posts("category=11&numberposts=1");
+echo $latest_cpt[0]->ID
 ?>
 	<style>
 		h1, h2, h3, h4, h5, h6, p, span {
@@ -22,10 +24,18 @@ get_header();
 			color: #777 !important;
 		}
 		.site-title {
+			margin-top: 1em;
 			font-size: 1em;
 		}
 		.carousel-item {
+			background-color: #ddd;
+			padding: 10px;
 			height: 500px;
+		}
+		.carousel-item img {
+			max-width: 100%;
+			max-height: 100%;
+			margin: auto;
 		}
 		.homepage-thumbnail:before {
 			content: "";
@@ -132,7 +142,7 @@ get_header();
 				</div>
 				<div class='row'>
 					<?php
-					$categories = get_categories();
+					$categories = get_categories(array('child_of' => 11));
 					foreach($categories as $category) {
 						$args = array(
 							'post_type' => 'post',
@@ -189,7 +199,7 @@ $(document).ready(function() {
 					let imgElement = $('<img>')
 										.attr('src', image.source_url)
 										.attr('alt', image.alt_text)
-										.addClass('d-block w-100')
+										.addClass('d-block')
 					divWrapper.append(imgElement)
 					imageContainer.append(divWrapper)
 				})
