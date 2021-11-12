@@ -15,8 +15,8 @@
  */
 
 get_header();
-$latest_cpt = get_posts("category=11&numberposts=1");
-echo $latest_cpt[0]->ID
+// $latest_cpt = get_posts("category=11&numberposts=1");
+// echo $latest_cpt[0]->ID
 ?>
 	<style>
 		h1, h2, h3, h4, h5, h6, p, span {
@@ -142,7 +142,7 @@ echo $latest_cpt[0]->ID
 				</div>
 				<div class='row'>
 					<?php
-					$categories = get_categories(array('child_of' => 11));
+					$categories = get_categories(array('child_of' => 11)); // TODO: ID will be different when transferring to new site
 					foreach($categories as $category) {
 						$args = array(
 							'post_type' => 'post',
@@ -167,10 +167,8 @@ echo $latest_cpt[0]->ID
 							}
 
 						} else {
-
 							// If no content, include the "No posts found" template.
 							get_template_part( 'template-parts/content/content', 'none' );
-
 						}
 					}
 					?>
@@ -181,6 +179,21 @@ echo $latest_cpt[0]->ID
 	</div><!-- .content-area -->
 <script>
 $(document).ready(function() {
+	let nextPostWrapper = null;
+	let previousPostWrapper = null;
+	let currentPostWrapper = null;
+	const carousel = $('#top-carousel');
+	const nextSlideControl = $('#next-slide-control');
+	const previousSlideControl = $('#previous-slide-control');
+	const nextItemControl = $('#next-item-control');
+	const previousItemControl = $('#previous-item-control');
+	let numSlides = 0;
+
+	carousel.carousel({
+        pause: true,
+        interval: false
+    });
+
 	function setCarousel(postID) {
 		nextSlideControl.text('>');
 		previousSlideControl.text('|<');
@@ -242,14 +255,19 @@ $(document).ready(function() {
 
 	function setSurroundingPosts() {
 		nextPostWrapper = currentPostWrapper.next();
-		if(nextPostWrapper.hasClass('category-title'))
-			nextPostWrapper = nextPostWrapper.next(); // TODO: handle if end
-		// nextPostWrapper = nextPostWrapper.find('.homepage-thumbnail');
+		if(nextPostWrapper.hasClass('category-title')) {
+			nextPostWrapper = nextPostWrapper.next();
+		} else if(nextPostWrapper.length === 0) {
+			nextPostWrapper = $('.homepage-thumbnail').first().parent();
+		}
 
 		previousPostWrapper = currentPostWrapper.prev();
-		if(previousPostWrapper.hasClass('category-title'))
+		if(previousPostWrapper.hasClass('category-title')){
 			previousPostWrapper = previousPostWrapper.prev();
-		// previousPostWrapper = previousPostWrapper.find('.homepage-thumbnail');
+		}
+		if(previousPostWrapper.length === 0) {
+			previousPostWrapper = $('.homepage-thumbnail').last().parent();
+		}
 	}
 
     $('.homepage-thumbnail')
@@ -258,21 +276,6 @@ $(document).ready(function() {
 			setSurroundingPosts();
 			setCarousel($(this).data('post-id'))
 		});
-
-	let nextPostWrapper = null;
-	let previousPostWrapper = null;
-	let currentPostWrapper = null;
-	const carousel = $('#top-carousel');
-	const nextSlideControl = $('#next-slide-control');
-	const previousSlideControl = $('#previous-slide-control');
-	const nextItemControl = $('#next-item-control');
-	const previousItemControl = $('#previous-item-control');
-	let numSlides = 0;
-
-	carousel.carousel({
-        pause: true,
-        interval: false
-    });
 
 	function handleSlideNavigationIcons(movement) {
 		const currentSlide = carousel.find('.active').index();
@@ -312,7 +315,6 @@ $(document).ready(function() {
 		}
 	});
 	nextSlideControl.on('click', function(event) {
-		// console.log(carousel.find('.active').index() + 1)
 		handleSlideNavigationIcons('forward');
 		if(carousel.find('.active').index() + 1 >= numSlides) {
 			setCarousel(nextPostWrapper.find('.homepage-thumbnail').data('post-id'));
@@ -323,8 +325,9 @@ $(document).ready(function() {
 		}
 	});
 
-	carousel.on('slide.bs.carousel', function(evt) {
-	});
+	currentPostWrapper = $('.homepage-thumbnail').first().parent();
+	setCarousel(currentPostWrapper.find('.homepage-thumbnail').data('post-id'));
+	setSurroundingPosts();
 
 });
 </script>
