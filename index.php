@@ -30,7 +30,8 @@ get_header();
 		.carousel-item {    
 			background-color: #ddd;
     		padding: 10px;
-			position: relatis
+			position: relative;
+			height: 100%;
 		}
 		.carousel-item img {    
 			position: relative;
@@ -101,6 +102,9 @@ get_header();
 		#work-details {
 			text-align: center;
 		}
+		#previous-slide-control, #next-slide-control {
+			cursor: pointer;
+		}
 		#next-slide-control {
 			float: right;
 		}
@@ -149,6 +153,62 @@ get_header();
 				</div>
 				<div class='row'>
 					<?php
+
+					function get_posts_years_array() {
+						global $wpdb;
+						$result = array();
+						$post_type = 'post';
+						$years = $wpdb->get_results( // https://wordpress.stackexchange.com/questions/145148/get-list-of-years-when-posts-have-been-published/273627
+							$wpdb->prepare(
+								"SELECT YEAR(post_date) FROM {$wpdb->posts} WHERE post_status = 'publish' and post_type='%s' GROUP BY YEAR(post_date) DESC",
+								$post_type
+							),
+							ARRAY_N
+						);
+						if ( is_array( $years ) && count( $years ) > 0 ) {
+							foreach ( $years as $year ) {
+								$result[] = $year[0];
+							}
+						}
+						return $result;
+					}
+					$years = array_reverse(get_posts_years_array());
+					foreach($years as $year) {
+						$args = array(
+							'post_type' => 'post',
+							'post_status' => 'publish',
+							'date_query' => array(
+								array(
+									'year'  => $year
+								),
+							),
+							'category_name' => 'portfolio',
+							'posts_per_page' => -1
+						);
+						$year_query = new WP_Query( $args );
+						if ( $year_query->have_posts() ) { ?>
+							<div class="col-md-2 col-xs-4 homepage-thumbnail-wrapper category-title">
+								<span><?php echo $year; ?></span>
+							</div><?php
+							// Load posts loop.
+							while ( $year_query->have_posts() ) {
+								$year_query->the_post();
+								?>
+									<div class="col-md-2 col-xs-4 homepage-thumbnail-wrapper">
+										<div class="homepage-thumbnail" data-post-id="<?php echo get_the_ID() ?>" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
+									</div>
+								<?php 
+								
+							}
+
+						} else {
+							// If no content, include the "No posts found" template.
+							get_template_part( 'template-parts/content/content', 'none' );
+						}
+					}
+
+
+
 					$categories = get_categories(array('child_of' => 11)); // TODO: ID will be different when transferring to new site
 					foreach($categories as $category) {
 						$args = array(
