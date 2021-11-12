@@ -27,13 +27,17 @@ get_header();
 			margin-top: 1em;
 			font-size: 1em;
 		}
-		.carousel-item {
+		.carousel-item {    
 			background-color: #ddd;
-			padding: 10px;
-			height: 500px;
+    		padding: 10px;
+			position: relative;
+			height: 100%;
 		}
-		.carousel-item img {
-			max-width: 100%;
+		.carousel-item img {    
+			position: relative;
+			top: 50%;
+			transform: translateY(-50%);
+			max-width: 80%;
 			max-height: 100%;
 			margin: auto;
 		}
@@ -68,6 +72,10 @@ get_header();
 		}
 		#carousel-container {
 			position: relative;
+		}
+		.carousel-inner {
+			background-color: #ddd;
+			height: 500px;
 		}
 		#work-description-wrapper {
 			position: absolute;
