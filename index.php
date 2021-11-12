@@ -166,9 +166,6 @@ echo $latest_cpt[0]->ID
 								
 							}
 
-							// // Previous/next page navigation.
-							// twentynineteen_the_posts_navigation();
-
 						} else {
 
 							// If no content, include the "No posts found" template.
@@ -186,7 +183,7 @@ echo $latest_cpt[0]->ID
 $(document).ready(function() {
 	function setCarousel(postID) {
 		nextSlideControl.text('>');
-		previousSlideControl.text('<');
+		previousSlideControl.text('|<');
 		$('#work-description-wrapper').removeClass('show-slide-up')
 		const imageLink = `http://localhost:8888/robeyclark_com/wp-json/wp/v2/media?parent=${postID}`
 		fetch(imageLink)
@@ -206,6 +203,7 @@ $(document).ready(function() {
 					imageContainer.append(divWrapper)
 					numSlides++;
 				})
+				handleSlideNavigationIcons('reset');
 			})
 			.catch(err => console.error(err))
 		
@@ -275,12 +273,47 @@ $(document).ready(function() {
         pause: true,
         interval: false
     });
+
+	function handleSlideNavigationIcons(movement) {
+		const currentSlide = carousel.find('.active').index();
+		if(movement === 'reset') {
+			if(currentSlide + 1 >= numSlides) {
+				nextSlideControl.text('>|');
+			} else {
+				nextSlideControl.text('>');
+			}
+			previousSlideControl.text('|<');
+		} else if(movement === 'forward') {
+			if(currentSlide + 2 >= numSlides) {
+				nextSlideControl.text('>|');
+			} else {
+				nextSlideControl.text('>');
+			}
+			previousSlideControl.text('<');
+		} else if(movement === 'back') {
+			nextSlideControl.text('>');
+			if(currentSlide - 1 === 0) {
+				previousSlideControl.text('|<');
+			} else {
+				previousSlideControl.text('<');
+			}
+		}
+		
+	}
+
 	previousSlideControl.on('click', function(event) {
-		carousel.carousel('prev');
+		handleSlideNavigationIcons('back');
+		if(carousel.find('.active').index() - 1 < 0) {
+			setCarousel(previousPostWrapper.find('.homepage-thumbnail').data('post-id'));
+			currentPostWrapper = previousPostWrapper;
+			setSurroundingPosts();
+		} else {
+			carousel.carousel('prev');
+		}
 	});
 	nextSlideControl.on('click', function(event) {
-		console.log(carousel.find('.active').index() + 1)
-
+		// console.log(carousel.find('.active').index() + 1)
+		handleSlideNavigationIcons('forward');
 		if(carousel.find('.active').index() + 1 >= numSlides) {
 			setCarousel(nextPostWrapper.find('.homepage-thumbnail').data('post-id'));
 			currentPostWrapper = nextPostWrapper;
@@ -291,11 +324,6 @@ $(document).ready(function() {
 	});
 
 	carousel.on('slide.bs.carousel', function(evt) {
-		if($(evt.relatedTarget).index() == 0) {
-			nextSlideControl.text('>|');
-		} else if ($(evt.relatedTarget).index() < $(this).find('.active').index()){
-			previousSlideControl.text('|<');
-		}
 	});
 
 });
