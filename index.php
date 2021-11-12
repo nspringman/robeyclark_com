@@ -30,8 +30,7 @@ get_header();
 		.carousel-item {    
 			background-color: #ddd;
     		padding: 10px;
-			position: relative;
-			height: 100%;
+			position: relatis
 		}
 		.carousel-item img {    
 			position: relative;
