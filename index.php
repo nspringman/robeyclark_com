@@ -120,7 +120,7 @@ echo $latest_cpt[0]->ID
 				<div class="row justify-content-between">
 					<div class="col-md-2 col-6">
 						<div id="previous-slide-control">
-							<span><</span>
+							<
 							<!-- <span>Previous</span> -->
 						</div>
 					</div>
@@ -136,7 +136,7 @@ echo $latest_cpt[0]->ID
 					<div class="col-md-2 col-6 order-md-3 order-2">
 						<div id="next-slide-control">
 							<!-- <span>Next</span> -->
-							<span>></span>
+							>
 						</div>
 					</div>
 				</div>
@@ -185,14 +185,16 @@ echo $latest_cpt[0]->ID
 <script>
 $(document).ready(function() {
 	function setCarousel(postID) {
+		nextSlideControl.text('>');
+		previousSlideControl.text('<');
 		$('#work-description-wrapper').removeClass('show-slide-up')
 		const imageLink = `http://localhost:8888/robeyclark_com/wp-json/wp/v2/media?parent=${postID}`
 		fetch(imageLink)
 			.then(response => response.json())
 			.then(json => {
-				console.log(json)
 				const imageContainer = $('#top-carousel .carousel-inner');
 				imageContainer.empty();
+				numSlides = 0;
 				json.forEach((image, idx) => {
 					let divWrapper = $('<div></div>')
 										.addClass(() => idx === 0 ? 'carousel-item active' : 'carousel-item')
@@ -202,6 +204,7 @@ $(document).ready(function() {
 										.addClass('d-block')
 					divWrapper.append(imgElement)
 					imageContainer.append(divWrapper)
+					numSlides++;
 				})
 			})
 			.catch(err => console.error(err))
@@ -210,7 +213,6 @@ $(document).ready(function() {
 		fetch(postMetaLink)
 			.then(response => response.json())
 			.then(json => {
-				console.log(json)
 				let workDetails = json.work_details
 				$('#work-title').text(json.title.rendered ? json.title.rendered + ',' : '');
 				$('#work-client').text(workDetails.client ? workDetails.client[0] + ',' : '');
@@ -240,23 +242,62 @@ $(document).ready(function() {
 			);
 	};
 
+	function setSurroundingPosts() {
+		nextPostWrapper = currentPostWrapper.next();
+		if(nextPostWrapper.hasClass('category-title'))
+			nextPostWrapper = nextPostWrapper.next(); // TODO: handle if end
+		// nextPostWrapper = nextPostWrapper.find('.homepage-thumbnail');
+
+		previousPostWrapper = currentPostWrapper.prev();
+		if(previousPostWrapper.hasClass('category-title'))
+			previousPostWrapper = previousPostWrapper.prev();
+		// previousPostWrapper = previousPostWrapper.find('.homepage-thumbnail');
+	}
+
     $('.homepage-thumbnail')
 		.on('click', function(event) {
+			currentPostWrapper = $(this).parent();
+			setSurroundingPosts();
 			setCarousel($(this).data('post-id'))
 		});
+
+	let nextPostWrapper = null;
+	let previousPostWrapper = null;
+	let currentPostWrapper = null;
 	const carousel = $('#top-carousel');
+	const nextSlideControl = $('#next-slide-control');
+	const previousSlideControl = $('#previous-slide-control');
+	const nextItemControl = $('#next-item-control');
+	const previousItemControl = $('#previous-item-control');
+	let numSlides = 0;
+
 	carousel.carousel({
         pause: true,
         interval: false
     });
-	$('#previous-slide-control')
-		.on('click', function(event) {
-			carousel.carousel('prev');
-		});
-	$('#next-slide-control')
-		.on('click', function(event) {
+	previousSlideControl.on('click', function(event) {
+		carousel.carousel('prev');
+	});
+	nextSlideControl.on('click', function(event) {
+		console.log(carousel.find('.active').index() + 1)
+
+		if(carousel.find('.active').index() + 1 >= numSlides) {
+			setCarousel(nextPostWrapper.find('.homepage-thumbnail').data('post-id'));
+			currentPostWrapper = nextPostWrapper;
+			setSurroundingPosts();
+		} else {
 			carousel.carousel('next');
-		});
+		}
+	});
+
+	carousel.on('slide.bs.carousel', function(evt) {
+		if($(evt.relatedTarget).index() == 0) {
+			nextSlideControl.text('>|');
+		} else if ($(evt.relatedTarget).index() < $(this).find('.active').index()){
+			previousSlideControl.text('|<');
+		}
+	});
+
 });
 </script>
 <?php
