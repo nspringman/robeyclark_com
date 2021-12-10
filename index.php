@@ -136,12 +136,7 @@ get_header();
 						</div>
 					</div>
 					<div class="col-md-8 order-md-2 order-3" id="work-details">
-						<span id="work-title"></span>
-						<span id="work-client"></span>
-						<span id="work-year"></span>
-						<span id="work-medium"></span>
-						<span id="work-dimensions"></span>
-						<span id="work-price"></span>
+						<span id="work-info"></span>
 						<span id="work-more"></span>
 					</div>
 					<div class="col-md-2 col-6 order-md-3 order-2">
@@ -292,12 +287,19 @@ $(document).ready(function() {
 			.then(response => response.json())
 			.then(json => {
 				let workDetails = json.work_details
-				$('#work-title').text(json.title.rendered ? json.title.rendered + ',' : '');
-				$('#work-client').text(workDetails.client ? workDetails.client[0] + ',' : '');
-				$('#work-year').text(workDetails.year ? workDetails.year[0] + ',' : '');
-				$('#work-medium').text(workDetails.medium ? workDetails.medium[0] + ',' : '');
-				$('#work-dimensions').text(workDetails.dimensions ? workDetails.dimensions[0] + ',' : '');
-				$('#work-price').text(workDetails.price ? workDetails.price[0] : '');
+				let infoStringArray = []
+				if(json.title.rendered) infoStringArray.push(json.title.rendered)
+				Object.entries(workDetails).forEach((entry) => {
+					if(entry[1] && entry[0] !== 'caption')
+						infoStringArray.push(entry[1][0])
+				})
+				let infoString = '';
+				infoStringArray.forEach((info, idx) => {
+					if(idx > 0)
+						infoString += ', ';
+					infoString +=  info;
+				})
+				$('#work-info').text(infoString);
 				const detailsWrapper = $('#work-more')
 				detailsWrapper.text('');
 				if(workDetails.caption) {
