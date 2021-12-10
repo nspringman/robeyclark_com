@@ -104,6 +104,7 @@ get_header();
 		}
 		#previous-slide-control, #next-slide-control {
 			cursor: pointer;
+			color: #a1a1a1;
 		}
 		#next-slide-control {
 			float: right;
