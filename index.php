@@ -53,8 +53,8 @@ get_header();
 			margin: 7px 0px;
 		}
 		.homepage-thumbnail:hover, .selected-thumbnail {
-			-webkit-box-shadow: 0px 0px 0px 2px lightgrey; 
-			box-shadow: 0px 0px 0px 2px lightgrey;
+			-webkit-box-shadow: 0px 0px 0px 3px #ddd; 
+			box-shadow: 0px 0px 0px 3px #ddd;
 		}
 		.category-title {
 			position: relative;
@@ -190,7 +190,7 @@ get_header();
 								$year_query->the_post();
 								?>
 									<div class="col-md-2 col-xs-4 homepage-thumbnail-wrapper">
-										<div class="homepage-thumbnail" data-post-id="<?php echo get_the_ID() ?>" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
+										<div class="homepage-thumbnail" data-post-id="<?php echo get_the_ID() ?>" id="post-<?php echo get_the_ID() ?>" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
 									</div>
 								<?php 
 								
@@ -201,8 +201,6 @@ get_header();
 							get_template_part( 'template-parts/content/content', 'none' );
 						}
 					}
-
-
 
 					$categories = get_categories(array('child_of' => 11)); // TODO: ID will be different when transferring to new site
 					foreach($categories as $category) {
@@ -323,6 +321,8 @@ $(document).ready(function() {
 	};
 
 	function setSurroundingPosts() {
+		$('.homepage-thumbnail').removeClass('selected-thumbnail')
+		currentPostWrapper.find('.homepage-thumbnail').addClass('selected-thumbnail')
 		nextPostWrapper = currentPostWrapper.next();
 		if(nextPostWrapper.hasClass('category-title')) {
 			nextPostWrapper = nextPostWrapper.next();
