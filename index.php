@@ -113,6 +113,19 @@ get_header();
 			text-decoration: underline;
 			cursor: pointer;
 		}
+		@media screen and (max-width: 768px) {
+			.carousel-inner {
+				height: 300px;
+			}
+
+			#work-description {
+				width: 80%;
+				margin: auto;
+				font-size: 1.3em;
+				margin-top: 1em;
+				margin-bottom: 1em;
+			}
+		}
 	</style>
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main">
@@ -183,14 +196,14 @@ get_header();
 						);
 						$year_query = new WP_Query( $args );
 						if ( $year_query->have_posts() ) { ?>
-							<div class="col-md-2 col-xs-4 homepage-thumbnail-wrapper category-title">
+							<div class="col-md-2 col-4 homepage-thumbnail-wrapper category-title">
 								<span><?php echo $year; ?></span>
 							</div><?php
 							// Load posts loop.
 							while ( $year_query->have_posts() ) {
 								$year_query->the_post();
 								?>
-									<div class="col-md-2 col-xs-4 homepage-thumbnail-wrapper">
+									<div class="col-md-2 col-4 homepage-thumbnail-wrapper">
 										<div class="homepage-thumbnail" data-post-id="<?php echo get_the_ID() ?>" id="post-<?php echo get_the_ID() ?>" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
 									</div>
 								<?php 
@@ -213,14 +226,14 @@ get_header();
 						);
 						$category_query = new WP_Query( $args );
 						if ( $category_query->have_posts() ) { ?>
-							<div class="col-md-2 homepage-thumbnail-wrapper category-title">
+							<div class="col-md-2 col-4 homepage-thumbnail-wrapper category-title">
 								<span><?php echo $category->name; ?></span>
 							</div><?php
 							// Load posts loop.
 							while ( $category_query->have_posts() ) {
 								$category_query->the_post();
 								?>
-									<div class="col-md-2 homepage-thumbnail-wrapper">
+									<div class="col-md-2 col-4 homepage-thumbnail-wrapper">
 										<div class="homepage-thumbnail" data-post-id="<?php echo get_the_ID() ?>" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
 									</div>
 								<?php 
@@ -298,16 +311,18 @@ $(document).ready(function() {
 						infoString += ', ';
 					infoString +=  info;
 				})
+				if(workDetails.caption)
+					infoString += ', ';
 				$('#work-info').text(infoString);
 				const detailsWrapper = $('#work-more')
 				detailsWrapper.text('');
 				if(workDetails.caption) {
-					detailsWrapper.prepend(', ')
 					const control = $('<span id="work-more-control">more</span>');
 					control.on('click',toggleCaption)
 					detailsWrapper.append(control);
 					$('#work-description').text(workDetails.caption ? workDetails.caption[0] : '');
 				}
+				$("html, body").animate({ scrollTop: 0 }, 500);
 			})
 	}
 	
