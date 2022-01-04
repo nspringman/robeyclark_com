@@ -270,7 +270,8 @@ function twentynineteen_scripts() {
 
 	wp_enqueue_style('type', get_template_directory_uri() . '/typebase.css');
 
-	wp_enqueue_style('main', get_template_directory_uri() . '/main.js');
+	// wp_register_script('main', get_template_directory_uri() . '/main.js');
+	// wp_enqueue_script('main', get_template_directory_uri() . '/main.js');
 }
 add_action( 'wp_enqueue_scripts', 'twentynineteen_scripts' );
 
