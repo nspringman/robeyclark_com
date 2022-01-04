@@ -13,6 +13,43 @@
  * @subpackage Twenty_Nineteen
  * @since Twenty Nineteen 1.0
  */
+if ( !is_user_logged_in() ) : ?>
+    <!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Robey Clark</title>
+		<style>
+			/* https://stackoverflow.com/questions/5087420/how-to-rotate-the-background-image-in-the-container */
+			body:before {
+				content: "";
+				position: absolute;
+				width: 200%;
+				height: 200%;
+				top: -50%;
+				left: -50%;
+				z-index: -1;
+				background: url(<?php echo get_template_directory_uri().'/robeyclark.jpg'; ?>) 0 0 repeat;
+				background-size: 250px;
+				-webkit-transform: rotate(-45deg);
+				-moz-transform: rotate(-45deg);
+				-ms-transform: rotate(-45deg);
+				-o-transform: rotate(-45deg);
+				transform: rotate(-45deg);
+			}
+			body {
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+	</body>
+	</html>
+<?php 
+	die();
+endif;
 
 get_header();
 // $latest_cpt = get_posts("category=11&numberposts=1");
@@ -164,7 +201,7 @@ $(document).ready(function() {
 		nextSlideControl.text('>');
 		previousSlideControl.text('|<');
 		$('#work-description-wrapper').removeClass('show-slide-up')
-		const imageLink = `http://localhost:8888/robeyclark_com/wp-json/wp/v2/media?parent=${postID}`
+		const imageLink = `wp-json/wp/v2/media?parent=${postID}`
 		fetch(imageLink)
 			.then(response => response.json())
 			.then(json => {
@@ -186,7 +223,7 @@ $(document).ready(function() {
 			})
 			.catch(err => console.error(err))
 		
-		const postMetaLink = `http://localhost:8888/robeyclark_com/wp-json/wp/v2/posts/${postID}`
+		const postMetaLink = `wp-json/wp/v2/posts/${postID}`
 		fetch(postMetaLink)
 			.then(response => response.json())
 			.then(json => {
