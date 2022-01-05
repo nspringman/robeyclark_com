@@ -22,7 +22,7 @@ get_header();
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main">
 			<div class="container-lg">
-				<div class='row justify-content-center'>
+				<div class='row justify-content-center d-none' id="carousel-row">
 					<div class='col-md-12'>
 						<div id="carousel-container">
 							<div id="top-carousel" class="carousel slide" data-bs-ride="carousel" data-interval="false">
@@ -34,7 +34,7 @@ get_header();
 						</div>
 					</div>
 				</div>
-				<div class="row justify-content-between">
+				<div class="row justify-content-between d-none" id="slide-control-row">
 					<div class="col-md-2 col-6">
 						<div id="previous-slide-control">
 							<
@@ -87,7 +87,7 @@ get_header();
 
 						}
 					}
-					
+
 					while($count % $numberColumns > 0){ ?>
 						<div class="col-md col-0 h-0 d-none d-md-block"></div> <?php 
 						$count += 1;
@@ -203,6 +203,8 @@ $(document).ready(function() {
 
     $('.homepage-thumbnail')
 		.on('click', function(event) {
+			$('#slide-control-row').removeClass('d-none')
+			$('#carousel-row').removeClass('d-none')
 			currentPostWrapper = $(this).parent();
 			setSurroundingPosts();
 			setCarousel($(this).data('post-id'))
@@ -256,9 +258,9 @@ $(document).ready(function() {
 		}
 	});
 
-	currentPostWrapper = $('.homepage-thumbnail').first().parent();
-	setCarousel(currentPostWrapper.find('.homepage-thumbnail').data('post-id'));
-	setSurroundingPosts();
+	// currentPostWrapper = $('.homepage-thumbnail').first().parent();
+	// setCarousel(currentPostWrapper.find('.homepage-thumbnail').data('post-id'));
+	// setSurroundingPosts();
 
 });
 </script>
