@@ -54,7 +54,8 @@ get_header();
 				</div>
 				<div class='row'>
 					<?php
-
+					$numberColumns = 9;
+					$count = 0;
 					$categories = get_categories(array('child_of' => 11)); // TODO: ID will be different when transferring to new site
 					foreach($categories as $category) {
 						$args = array(
@@ -65,26 +66,32 @@ get_header();
 						);
 						$category_query = new WP_Query( $args );
 						if ( $category_query->have_posts() ) { ?>
-							<div class="col-md-2 col-4 homepage-thumbnail-wrapper category-title">
+							<div class="col-md col-3 homepage-thumbnail-wrapper category-title">
 								<span><?php echo $category->name; ?></span>
 							</div><?php
+							$count += 1;
 							// Load posts loop.
 							while ( $category_query->have_posts() ) {
 								$category_query->the_post();
 								?>
-									<div class="col-md-2 col-4 homepage-thumbnail-wrapper">
+									<div class="col-md col-3 homepage-thumbnail-wrapper">
 										<div class="homepage-thumbnail" data-post-id="<?php echo get_the_ID() ?>" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
 									</div>
 								<?php 
 								
+								$count += 1;
+								if($count % $numberColumns == 0) { ?>
+									<div class="col-md-12 h-0 d-none d-md-block"></div>
+								<?php }
 							}
 
-						} else {
-							// If no content, include the "No posts found" template.
-							get_template_part( 'template-parts/content/content', 'none' );
 						}
 					}
-					?>
+					
+					while($count % $numberColumns > 0){ ?>
+						<div class="col-md col-0 h-0 d-none d-md-block"></div> <?php 
+						$count += 1;
+					} ?>
 				</div>
 			</div>
 			
