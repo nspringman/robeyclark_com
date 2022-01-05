@@ -13,43 +13,6 @@
  * @subpackage Twenty_Nineteen
  * @since Twenty Nineteen 1.0
  */
-if ( !is_user_logged_in() ) : ?>
-    <!DOCTYPE html>
-	<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Robey Clark</title>
-		<style>
-			/* https://stackoverflow.com/questions/5087420/how-to-rotate-the-background-image-in-the-container */
-			body:before {
-				content: "";
-				position: absolute;
-				width: 200%;
-				height: 200%;
-				top: -50%;
-				left: -50%;
-				z-index: -1;
-				background: url(<?php echo get_template_directory_uri().'/robeyclark.jpg'; ?>) 0 0 repeat;
-				background-size: 250px;
-				-webkit-transform: rotate(-45deg);
-				-moz-transform: rotate(-45deg);
-				-ms-transform: rotate(-45deg);
-				-o-transform: rotate(-45deg);
-				transform: rotate(-45deg);
-			}
-			body {
-				overflow: hidden;
-			}
-		</style>
-	</head>
-	<body>
-	</body>
-	</html>
-<?php 
-	die();
-endif;
 
 get_header();
 // $latest_cpt = get_posts("category=11&numberposts=1");
@@ -91,59 +54,6 @@ get_header();
 				</div>
 				<div class='row'>
 					<?php
-
-					function get_posts_years_array() {
-						global $wpdb;
-						$result = array();
-						$post_type = 'post';
-						$years = $wpdb->get_results( // https://wordpress.stackexchange.com/questions/145148/get-list-of-years-when-posts-have-been-published/273627
-							$wpdb->prepare(
-								"SELECT YEAR(post_date) FROM {$wpdb->posts} WHERE post_status = 'publish' and post_type='%s' GROUP BY YEAR(post_date) DESC",
-								$post_type
-							),
-							ARRAY_N
-						);
-						if ( is_array( $years ) && count( $years ) > 0 ) {
-							foreach ( $years as $year ) {
-								$result[] = $year[0];
-							}
-						}
-						return $result;
-					}
-					$years = array_reverse(get_posts_years_array());
-					foreach($years as $year) {
-						$args = array(
-							'post_type' => 'post',
-							'post_status' => 'publish',
-							'date_query' => array(
-								array(
-									'year'  => $year
-								),
-							),
-							'category_name' => 'portfolio',
-							'posts_per_page' => -1
-						);
-						$year_query = new WP_Query( $args );
-						if ( $year_query->have_posts() ) { ?>
-							<div class="col-md-2 col-4 homepage-thumbnail-wrapper category-title">
-								<span><?php echo $year; ?></span>
-							</div><?php
-							// Load posts loop.
-							while ( $year_query->have_posts() ) {
-								$year_query->the_post();
-								?>
-									<div class="col-md-2 col-4 homepage-thumbnail-wrapper">
-										<div class="homepage-thumbnail" data-post-id="<?php echo get_the_ID() ?>" id="post-<?php echo get_the_ID() ?>" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
-									</div>
-								<?php 
-								
-							}
-
-						} else {
-							// If no content, include the "No posts found" template.
-							get_template_part( 'template-parts/content/content', 'none' );
-						}
-					}
 
 					$categories = get_categories(array('child_of' => 11)); // TODO: ID will be different when transferring to new site
 					foreach($categories as $category) {
@@ -201,14 +111,14 @@ $(document).ready(function() {
 		nextSlideControl.text('>');
 		previousSlideControl.text('|<');
 		$('#work-description-wrapper').removeClass('show-slide-up')
-		const imageLink = `wp-json/wp/v2/media?parent=${postID}`
+		const imageLink = `wp-json/wp/v2/media?parent=${postID}&per_page=100`
 		fetch(imageLink)
 			.then(response => response.json())
 			.then(json => {
 				const imageContainer = $('#top-carousel .carousel-inner');
 				imageContainer.empty();
 				numSlides = 0;
-				json.forEach((image, idx) => {
+				json.reverse().forEach((image, idx) => {
 					let divWrapper = $('<div></div>')
 										.addClass(() => idx === 0 ? 'carousel-item active' : 'carousel-item')
 					let imgElement = $('<img>')
@@ -229,7 +139,7 @@ $(document).ready(function() {
 			.then(json => {
 				let workDetails = json.work_details
 				let infoStringArray = []
-				if(json.title.rendered) infoStringArray.push(json.title.rendered)
+				if(json.title.rendered) infoStringArray.push(json.title.rendered.replace('&#038;', '&'))
 				Object.entries(workDetails).forEach((entry) => {
 					if(entry[1] && entry[0] !== 'caption')
 						infoStringArray.push(entry[1][0])
