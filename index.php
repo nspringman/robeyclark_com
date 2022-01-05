@@ -139,10 +139,10 @@ $(document).ready(function() {
 			.then(json => {
 				let workDetails = json.work_details
 				let infoStringArray = []
-				if(json.title.rendered) infoStringArray.push(json.title.rendered.replace('&#038;', '&'))
+				// if(json.title.rendered) infoStringArray.push(json.title.rendered.replace('&#038;', '&'))
 				Object.entries(workDetails).forEach((entry) => {
 					if(entry[1] && entry[0] !== 'caption')
-						infoStringArray.push(entry[1][0])
+						infoStringArray.push(entry[1][0].replace('&#038;', '&'))
 				})
 				let infoString = '';
 				infoStringArray.forEach((info, idx) => {
