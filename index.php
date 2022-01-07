@@ -70,6 +70,9 @@ get_header();
 								<span><?php echo $category->name; ?></span>
 							</div><?php
 							$count += 1;
+							if($count % $numberColumns == 0) { ?>
+								<div class="col-md-12 h-0 d-none d-md-block"></div>
+							<?php }
 							// Load posts loop.
 							while ( $category_query->have_posts() ) {
 								$category_query->the_post();
