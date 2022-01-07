@@ -78,7 +78,7 @@ get_header();
 								$category_query->the_post();
 								?>
 									<div class="col-md col-3 homepage-thumbnail-wrapper">
-										<div class="homepage-thumbnail" data-post-id="<?php echo get_the_ID() ?>" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url() . ");"; ?>"></div>
+										<div class="homepage-thumbnail" data-post-id="<?php echo get_the_ID() ?>" style="<?php echo "background-image: url(" . get_the_post_thumbnail_url(null, $size = 'thumbnail') . ");"; ?>"></div>
 									</div>
 								<?php 
 								
